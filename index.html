@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sei una brutta persona?</title>
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Sei una brutta persona? Fai il test! 😈" />
+<meta property="og:description" content="Rispondi a 10 domande oneste e scopri se sei un santo o una brutta persona certificata. Ci metti solo un minuto!" />
+<meta property="og:image" content="https://images.prodia.xyz/812fc45f-cc59-4b11-9a70-8b1b8be881b7.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght=700;900&family=Inter:wght=400;500;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -128,10 +136,10 @@ var domande = [
   "Eviti accuratamente di guardare dentro la tua coscienza?"
 ];
 
-// Immagini configurate in base alle tue istruzioni
-var IMG_DIAVOLO = "https://images.prodia.xyz/812fc45f-cc59-4b11-9a70-8b1b8be881b7.png"; // Prima foto (Punteggio 4-10)
-var IMG_NORMALE = "https://images.prodia.xyz/39665f8c-b09e-4a69-8280-9941a995eef9.png"; // Seconda foto (Punteggio 1-3)
-var IMG_SANTA   = "https://images.prodia.xyz/70868f05-4c01-4475-b461-1efd630b9ee3.png"; // Terza foto (Punteggio 0)
+// Configurazione immagini di sfondo per i risultati
+var IMG_DIAVOLO = "https://images.prodia.xyz/812fc45f-cc59-4b11-9a70-8b1b8be881b7.png"; // Punteggio 4-10 (Prima foto)
+var IMG_NORMALE = "https://images.prodia.xyz/39665f8c-b09e-4a69-8280-9941a995eef9.png"; // Punteggio 1-3 (Seconda foto)
+var IMG_SANTA   = "https://images.prodia.xyz/70868f05-4c01-4475-b461-1efd630b9ee3.png"; // Punteggio 0 (Terza foto)
 
 var BG_DIAVOLO = "#3d0000";
 var BG_NORMALE = "#003d1a";
@@ -179,17 +187,17 @@ document.getElementById('btn-risultato').onclick = function() {
 
   var emoji, titolo, desc, sfondo, bgColor;
 
-  if (si === 0) { // Risultato 0
+  if (si === 0) {
     emoji = '😇';
     titolo = 'Un <em style="color:#ffe066">santo</em> in terra';
     desc = 'Zero sì. O sei davvero una persona straordinaria, oppure hai mentito a tutte le domande — il che sarebbe ironicamente la risposta alla prima. In ogni caso, rispetto.';
     sfondo = IMG_SANTA; bgColor = BG_SANTA;
-  } else if (si <= 3) { // Risultato da 1 a 3
+  } else if (si <= 3) {
     emoji = '🤨';
     titolo = 'Un po\' <em style="color:#88ddff">sospetto</em>';
     desc = 'Qualche risposta imbarazzante c\'è scappata. Non sei un mostro, ma qualcosa di cui non vai fiero probabilmente l\'hai fatto. Tieniti d\'occhio.';
     sfondo = IMG_NORMALE; bgColor = BG_NORMALE;
-  } else { // Risultato da 4 a 10
+  } else {
     emoji = '🔥';
     titolo = '<em style="color:#ff4422">Brutta persona</em> certificata';
     desc = 'Il quadro che emerge non è rassicurante. Hai fatto cose che hanno ferito gli altri — e probabilmente lo sai. La domanda è: ti importa cambiare?';
