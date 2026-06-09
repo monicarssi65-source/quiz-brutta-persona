@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sei una brutta persona?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght=700;900&family=Inter:wght=400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #222;
+    min-height: 100vh;
+    background: #8B0000;
+  }
+  .header {
+    background: #8B0000;
+    text-align: center;
+    padding: 36px 20px 30px;
+    border-bottom: 3px solid #ff2200;
+  }
+  .tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #ffaa88; display: block; margin-bottom: 12px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 8vw, 3rem); font-weight: 900; line-height: 1.05; color: #fff; margin-bottom: 8px; text-shadow: 0 2px 12px #000; }
+  h1 em { color: #ffcc00; font-style: italic; }
+  .sottotitolo { font-size: 13px; color: #ffcccc; }
+
+  .domande-area { background: #8B0000; padding: 28px 16px 20px; }
+  .container { max-width: 580px; margin: 0 auto; }
+
+  .domanda-card {
+    background: rgba(0,0,0,0.45);
+    border: 1.5px solid rgba(255,80,0,0.4);
+    border-radius: 12px;
+    padding: 20px 18px 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .domanda-card.risposta-data { border-color: #ffcc00; }
+  .domanda-numero { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #ffaa44; margin-bottom: 6px; }
+  .domanda-testo { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: #fff; line-height: 1.45; margin-bottom: 14px; text-shadow: 0 1px 4px #000; }
+  .risposte { display: flex; gap: 10px; }
+  .btn-risposta {
+    flex: 1; padding: 11px 8px; border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; color: #fff;
+  }
+  .btn-risposta:hover { border-color: #ffcc00; background: rgba(255,200,0,0.2); color: #ffcc00; }
+  
+  .btn-risposta.sel-si { background: #C0392B; border-color: #ff4422; color: #fff; }
+  .btn-risposta.sel-no { background: #1a6622; border-color: #44aa55; color: #fff; }
+
+  .btn-risultato-wrap { max-width: 580px; margin: 0 auto; padding: 0 16px 32px; background: #8B0000; }
+  .btn-risultato {
+    display: none; width: 100%; padding: 16px;
+    background: #ffcc00; color: #111; border: none; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700;
+    letter-spacing: 1px; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 4px;
+  }
+  .btn-risultato:hover { background: #ffe033; transform: translateY(-1px); }
+
+  .risultato-box {
+    display: none;
+    position: relative; min-height: 100vh;
+    background-size: cover; background-position: center top;
+    background-repeat: no-repeat; text-align: center;
+  }
+  .risultato-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 55%, rgba(0,0,0,0.95) 100%);
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding: 40px 24px 48px;
+  }
+  .r-emoji { font-size: 56px; margin-bottom: 10px; line-height: 1; }
+  .r-titolo { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 12px; text-shadow: 0 2px 10px #000; }
+  .r-punteggio {
+    display: inline-block; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 8px; padding: 8px 22px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 16px;
+  }
+  .r-punteggio strong { color: #ffcc00; font-size: 15px; }
+  .r-desc { font-size: 15px; color: #ddd; line-height: 1.75; max-width: 420px; margin: 0 auto 28px; text-shadow: 0 1px 4px #000; }
+  .btn-ricomincia {
+    padding: 13px 32px; background: #ffcc00; color: #111; border: none; border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .btn-ricomincia:hover { background: #ffe033; }
+  .nota { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 16px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="tag">✦ Test della verità ✦</span>
+  <h1>Sei una <em>brutta</em><br>persona?</h1>
+  <p class="sottotitolo">Rispondi onestamente. Nessuno ti guarda (forse).</p>
+</div>
+
+<div class="domande-area">
+  <div class="container" id="domande-container"></div>
+</div>
+<div class="btn-risultato-wrap">
+  <button class="btn-risultato" id="btn-risultato">Scopri il risultato 🎯</button>
+</div>
+
+<div class="risultato-box" id="risultato-box">
+  <div class="risultato-overlay">
+    <div class="r-emoji" id="r-emoji"></div>
+    <div class="r-titolo" id="r-titolo"></div>
+    <div class="r-punteggio">Risposte "Sì": <strong id="r-num"></strong> su 10</div>
+    <p class="r-desc" id="r-desc"></p>
+    <button class="btn-ricomincia" onclick="ricomincia()">↩ Rifai il test</button>
+    <p class="nota">Condividi il risultato con i tuoi amici 😈</p>
+  </div>
+</div>
+
+<script>
+var domande = [
+  "Ti piace mentire a tutti?",
+  "Hai mai ferito persone che ti volevano bene (parenti o amici)?",
+  "Hai mai tradito chi si fidava di te?",
+  "Fai di tutto per apparire?",
+  "Per avere successo faresti di tutto, senza esclusione di colpi?",
+  "Hai mai calunniato persone buone?",
+  "Sei senza empatia verso gli altri?",
+  "Hai fatto cattiverie sapendo che erano cattiverie?",
+  "Prendi in giro le persone?",
+  "Eviti accuratamente di guardare dentro la tua coscienza?"
+];
+
+// Immagini configurate in base alle tue istruzioni
+var IMG_DIAVOLO = "https://images.prodia.xyz/812fc45f-cc59-4b11-9a70-8b1b8be881b7.png"; // Prima foto (Punteggio 4-10)
+var IMG_NORMALE = "https://images.prodia.xyz/39665f8c-b09e-4a69-8280-9941a995eef9.png"; // Seconda foto (Punteggio 1-3)
+var IMG_SANTA   = "https://images.prodia.xyz/70868f05-4c01-4475-b461-1efd630b9ee3.png"; // Terza foto (Punteggio 0)
+
+var BG_DIAVOLO = "#3d0000";
+var BG_NORMALE = "#003d1a";
+var BG_SANTA   = "#1a1a2e";
+
+var risposte = new Array(domande.length).fill(null);
+
+function costruisci() {
+  var html = '';
+  for (var i = 0; i < domande.length; i++) {
+    html += '<div class="domanda-card" id="card-' + i + '">' +
+      '<div class="domanda-numero">Domanda ' + (i+1) + '</div>' +
+      '<div class="domanda-testo">' + domande[i] + '</div>' +
+      '<div class="risposte">' +
+      '<button class="btn-risposta" id="si-' + i + '" onclick="scegli(' + i + ',\'si\')">😬 Sì</button>' +
+      '<button class="btn-risposta" id="no-' + i + '" onclick="scegli(' + i + ',\'no\')">😇 No</button>' +
+      '</div></div>';
+  }
+  document.getElementById('domande-container').innerHTML = html;
+}
+
+function scegli(idx, val) {
+  document.getElementById('si-' + idx).classList.remove('sel-si');
+  document.getElementById('no-' + idx).classList.remove('sel-no');
+  
+  risposte[idx] = val;
+  document.getElementById('card-' + idx).classList.add('risposta-data');
+  
+  if (val === 'si') { 
+    document.getElementById('si-' + idx).classList.add('sel-si'); 
+  } else { 
+    document.getElementById('no-' + idx).classList.add('sel-no'); 
+  }
+  
+  if (risposte.every(function(r){ return r !== null; })) {
+    var btn = document.getElementById('btn-risultato');
+    btn.style.display = 'block';
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+document.getElementById('btn-risultato').onclick = function() {
+  var si = risposte.filter(function(r){ return r === 'si'; }).length;
+  document.getElementById('r-num').textContent = si;
+
+  var emoji, titolo, desc, sfondo, bgColor;
+
+  if (si === 0) { // Risultato 0
+    emoji = '😇';
+    titolo = 'Un <em style="color:#ffe066">santo</em> in terra';
+    desc = 'Zero sì. O sei davvero una persona straordinaria, oppure hai mentito a tutte le domande — il che sarebbe ironicamente la risposta alla prima. In ogni caso, rispetto.';
+    sfondo = IMG_SANTA; bgColor = BG_SANTA;
+  } else if (si <= 3) { // Risultato da 1 a 3
+    emoji = '🤨';
+    titolo = 'Un po\' <em style="color:#88ddff">sospetto</em>';
+    desc = 'Qualche risposta imbarazzante c\'è scappata. Non sei un mostro, ma qualcosa di cui non vai fiero probabilmente l\'hai fatto. Tieniti d\'occhio.';
+    sfondo = IMG_NORMALE; bgColor = BG_NORMALE;
+  } else { // Risultato da 4 a 10
+    emoji = '🔥';
+    titolo = '<em style="color:#ff4422">Brutta persona</em> certificata';
+    desc = 'Il quadro che emerge non è rassicurante. Hai fatto cose che hanno ferito gli altri — e probabilmente lo sai. La domanda è: ti importa cambiare?';
+    sfondo = IMG_DIAVOLO; bgColor = BG_DIAVOLO;
+  }
+
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-titolo').innerHTML = titolo;
+  document.getElementById('r-desc').innerHTML = desc;
+  
+  var box = document.getElementById('risultato-box');
+  box.style.backgroundColor = bgColor;
+  box.style.backgroundImage = 'url(' + sfondo + ')';
+
+  document.querySelector('.domande-area').style.display = 'none';
+  document.querySelector('.btn-risultato-wrap').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
+  box.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+function ricomincia() {
+  risposte = new Array(domande.length).fill(null);
+  document.querySelector('.header').style.display = 'block';
+  document.querySelector('.domande-area').style.display = 'block';
+  document.querySelector('.btn-risultato-wrap').style.display = 'block';
+  document.getElementById('btn-risultato').style.display = 'none';
+  document.getElementById('risultato-box').style.display = 'none';
+  costruisci();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+costruisci();
+</script>
+</body>
+</html>
